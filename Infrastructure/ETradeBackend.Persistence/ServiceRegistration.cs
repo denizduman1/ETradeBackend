@@ -1,5 +1,5 @@
-﻿using ETradeBackend.Application.Abstractions;
-using ETradeBackend.Persistence.Concretes;
+﻿using ETradeBackend.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace ETradeBackend.Persistence
     {
         public static void AddPersistenceServices(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<IProductService, ProductService>();
+            serviceCollection.AddDbContext<ETradeBackendDbContext>(opt => opt.UseNpgsql(Configuration.ConnectionString));
         }
     }
 }

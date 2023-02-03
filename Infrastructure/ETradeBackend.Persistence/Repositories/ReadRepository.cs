@@ -26,7 +26,7 @@ namespace ETradeBackend.Persistence.Repositories
 
         public async Task<T> GetByIdAsync(string id)
         {
-            return await Table.FirstOrDefaultAsync(t => t.Id == Guid.Parse(id));
+            return await Table.FindAsync(Guid.Parse(id));
         }
 
         public async Task<T> GetSingleAsync(Expression<Func<T, bool>> filterMethod) => await Table.FirstOrDefaultAsync(filterMethod);

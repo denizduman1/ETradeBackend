@@ -22,15 +22,40 @@ namespace ETradeBackend.Persistence.Repositories
 
         public DbSet<T> Table => _context.Set<T>();
 
-        public IQueryable<T> GetAll() => Table;
-
-        public async Task<T> GetByIdAsync(string id)
+        public IQueryable<T> GetAll(bool tracking = true)
         {
-            return await Table.FindAsync(Guid.Parse(id));
+            var query = Table.AsQueryable();
+            if (!tracking)
+                query = query.AsNoTracking();
+            return query;
         }
 
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> filterMethod) => await Table.FirstOrDefaultAsync(filterMethod);
+        public async Task<T> GetByIdAsync(string id, bool tracking = true)
+        {
+            var query = Table.AsQueryable();
+            if (!tracking)
+            {
+                query = query.AsNoTracking();
+            }
+            return await query.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));
+        }
 
-        public IQueryable<T> GetWhere(Expression<Func<T, bool>> filterMethod) => Table.Where(filterMethod);
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> filterMethod, bool tracking = true)
+        {
+            var query = Table.AsQueryable();
+            if (!tracking)
+            {
+                query = query.AsNoTracking();
+            }
+            return await query.FirstOrDefaultAsync(filterMethod);
+        }
+
+        public IQueryable<T> GetWhere(Expression<Func<T, bool>> filterMethod, bool tracking = true)
+        {
+            var query = Table.Where(filterMethod);
+            if (!tracking)
+                query = query.AsNoTracking();
+            return query;
+        }
     }
 }

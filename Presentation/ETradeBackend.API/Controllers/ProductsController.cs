@@ -28,9 +28,9 @@ namespace ETradeBackend.API.Controllers
             // });
             //await _productWriteRepository.SaveAsync();
 
-            Product p = await _productReadRepository.GetByIdAsync("f93e4059-724e-4d31-8485-41179c5f6211",false);
-            p.Name = "Derya";
-            _productWriteRepository.SaveAsync();
+            //Product p = await _productReadRepository.GetByIdAsync("f93e4059-724e-4d31-8485-41179c5f6211",false);
+            //p.Name = "Derya";
+            //_productWriteRepository.SaveAsync();
         }
 
         [HttpGet("{id}")]

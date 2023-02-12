@@ -20,17 +20,24 @@ namespace ETradeBackend.API.Controllers
 
         [HttpGet]
         public async Task Get() {
-            //await _productWriteRepository.AddRangeAsync(new()
-            //{
-            //    new() {Id = Guid.NewGuid(), Name = "Product 1", Price = 100, CreatedDate = DateTime.UtcNow , Stock = 10},
-            //    new() {Id = Guid.NewGuid(), Name = "Product 2", Price = 200, CreatedDate = DateTime.UtcNow , Stock = 20},
-            //    new() {Id = Guid.NewGuid(), Name = "Product 3", Price = 300, CreatedDate = DateTime.UtcNow , Stock = 30}
-            // });
-            //await _productWriteRepository.SaveAsync();
+            await _productWriteRepository.AddRangeAsync(new()
+            {
+                new() {Id = Guid.NewGuid(), Name = "Product 1", Price = 100, CreatedDate = DateTime.UtcNow , Stock = 10},
+                new() {Id = Guid.NewGuid(), Name = "Product 2", Price = 200, CreatedDate = DateTime.UtcNow , Stock = 20},
+                new() {Id = Guid.NewGuid(), Name = "Product 3", Price = 300, CreatedDate = DateTime.UtcNow , Stock = 30}
+             });
+            await _productWriteRepository.SaveAsync();
 
             //Product p = await _productReadRepository.GetByIdAsync("f93e4059-724e-4d31-8485-41179c5f6211",false);
             //p.Name = "Derya";
             //_productWriteRepository.SaveAsync();
+        }
+
+        [HttpGet("ProductList")]
+        public IActionResult ProductList()
+        {
+            var products = _productReadRepository.GetAll().ToList();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]

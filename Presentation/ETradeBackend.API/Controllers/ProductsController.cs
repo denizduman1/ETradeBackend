@@ -1,7 +1,9 @@
 ﻿using ETradeBackend.Application.Repositories;
+using ETradeBackend.Application.ViewModels.Products;
 using ETradeBackend.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ETradeBackend.API.Controllers
 {
@@ -19,33 +21,51 @@ namespace ETradeBackend.API.Controllers
         }
 
         [HttpGet]
-        public async Task Get() {
-            await _productWriteRepository.AddRangeAsync(new()
-            {
-                new() {Id = Guid.NewGuid(), Name = "Product 1", Price = 100, CreatedDate = DateTime.UtcNow , Stock = 10},
-                new() {Id = Guid.NewGuid(), Name = "Product 2", Price = 200, CreatedDate = DateTime.UtcNow , Stock = 20},
-                new() {Id = Guid.NewGuid(), Name = "Product 3", Price = 300, CreatedDate = DateTime.UtcNow , Stock = 30}
-             });
-            await _productWriteRepository.SaveAsync();
-
-            //Product p = await _productReadRepository.GetByIdAsync("f93e4059-724e-4d31-8485-41179c5f6211",false);
-            //p.Name = "Derya";
-            //_productWriteRepository.SaveAsync();
-        }
-
-        [HttpGet("ProductList")]
-        public IActionResult ProductList()
+        public IActionResult Get()
         {
-            var products = _productReadRepository.GetAll().ToList();
-            return Ok(products);
+            return Ok(_productReadRepository.GetAll(false));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            Product product = await _productReadRepository.GetByIdAsync(id);
-            return Ok(product);
+            return Ok(await _productReadRepository.GetByIdAsync(id,false));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Post(VM_Create_Product model)
+        {
+            bool isOkay = await _productWriteRepository.AddAsync(new()
+            {
+                Name= model.Name,
+                Price= model.Price,
+                Stock=model.Stock
+            });
+            if (isOkay)
+            {
+                await _productWriteRepository.SaveAsync();
+                return StatusCode((int)HttpStatusCode.Created);
+            }
+            return StatusCode((int)HttpStatusCode.ServiceUnavailable);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(VM_Update_Product model)
+        {
+            Product product = await _productReadRepository.GetByIdAsync(model.Id);
+            product.Stock = model.Stock;
+            product.Price = model.Price;
+            product.Name= model.Name;
+            await _productWriteRepository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _productWriteRepository.Remove(id);
+            await _productWriteRepository.SaveAsync();
+            return Ok();
+        }
     }
 }

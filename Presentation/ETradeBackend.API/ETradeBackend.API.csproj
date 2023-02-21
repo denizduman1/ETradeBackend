@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\ETradeBackend.Infrastructure\ETradeBackend.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\ETradeBackend.Persistence\ETradeBackend.Persistence.csproj" />
   </ItemGroup>
 
